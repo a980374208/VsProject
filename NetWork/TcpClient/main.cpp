@@ -64,7 +64,7 @@ int main(int argc, char** argv) {
 	memset(&addr, 0, sizeof(struct sockaddr_in));
 
 	addr.sin_family = AF_INET;
-	addr.sin_addr.s_addr = inet_addr("39.103.192.173");
+	addr.sin_addr.s_addr = inet_addr("");
 
 	struct timeval tv_begin;
 	gettimeofday(&tv_begin, NULL);
