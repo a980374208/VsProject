@@ -35,6 +35,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Coordinate_3D", "06Coordina
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Camera_1", "07Camera\Camera_1\Camera_1.vcxproj", "{DE1FA295-2528-4D29-B610-FB50EE2A2BE1}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Camera_2", "07Camera\Camera_2\Camera_2.vcxproj", "{794D5D26-0018-4BF8-8820-EDCC0062EA57}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -171,6 +173,14 @@ Global
 		{DE1FA295-2528-4D29-B610-FB50EE2A2BE1}.Release|x64.Build.0 = Release|x64
 		{DE1FA295-2528-4D29-B610-FB50EE2A2BE1}.Release|x86.ActiveCfg = Release|Win32
 		{DE1FA295-2528-4D29-B610-FB50EE2A2BE1}.Release|x86.Build.0 = Release|Win32
+		{794D5D26-0018-4BF8-8820-EDCC0062EA57}.Debug|x64.ActiveCfg = Debug|x64
+		{794D5D26-0018-4BF8-8820-EDCC0062EA57}.Debug|x64.Build.0 = Debug|x64
+		{794D5D26-0018-4BF8-8820-EDCC0062EA57}.Debug|x86.ActiveCfg = Debug|Win32
+		{794D5D26-0018-4BF8-8820-EDCC0062EA57}.Debug|x86.Build.0 = Debug|Win32
+		{794D5D26-0018-4BF8-8820-EDCC0062EA57}.Release|x64.ActiveCfg = Release|x64
+		{794D5D26-0018-4BF8-8820-EDCC0062EA57}.Release|x64.Build.0 = Release|x64
+		{794D5D26-0018-4BF8-8820-EDCC0062EA57}.Release|x86.ActiveCfg = Release|Win32
+		{794D5D26-0018-4BF8-8820-EDCC0062EA57}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
