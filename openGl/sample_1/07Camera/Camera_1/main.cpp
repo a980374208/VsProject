@@ -215,8 +215,8 @@ int main() {
 		ourShader.setMat4("view", view);
 
 		glm::mat4 projection;
-					      //垂直方向视角范围    //视口宽高比      //最近绘制距离  //最远绘制距离
-		projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f          , 100.0f);
+					      //垂直方向视角范围(距离)  //视口宽高比      //最近绘制距离  //最远绘制距离
+		projection = glm::perspective(glm::radians(45.0f)    , 800.0f / 600.0f, 0.1f          , 100.0f);
 		int projectionLoc = glGetUniformLocation(ourShader.ID, "projection");
 		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
