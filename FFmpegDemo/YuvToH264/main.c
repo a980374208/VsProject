@@ -62,11 +62,11 @@ int main(int argc, char** argv) {
     AVPacket* pkt = NULL;
     int ret = 0;
 
-    in_yuv_file = "E:/debug.yuv";      // 输入YUV文件
+    in_yuv_file = "E:/yuv420p_1920x1080.yuv";      // 输入YUV文件
     //out_h264_file = "E:/x264.h264";
     //codec_name = "libx264";
-    out_h264_file = "E:/qsv.h264";
-    codec_name = "h264_qsv";
+    out_h264_file = "E:/x264.h264";
+    codec_name = "h264_nvenc";
 
     /* 查找指定的编码器 */
     codec = avcodec_find_encoder_by_name(codec_name);
@@ -93,7 +93,7 @@ int main(int argc, char** argv) {
      */
     codec_ctx->gop_size = 25;   // I帧间隔
     codec_ctx->max_b_frames = 2; // 如果不想包含B帧则设置为0
-    codec_ctx->pix_fmt = AV_PIX_FMT_NV12;
+    codec_ctx->pix_fmt = AV_PIX_FMT_YUV420P;
     //
     if (codec->id == AV_CODEC_ID_H264) {
         // 相关的参数可以参考libx264.c的 AVOption options
@@ -104,11 +104,6 @@ int main(int argc, char** argv) {
         ret = av_opt_set(codec_ctx->priv_data, "profile", "main", 0); // 默认是high
         if (ret != 0) {
             printf("av_opt_set profile failed\n");
-        }
-        ret = av_opt_set(codec_ctx->priv_data, "tune", "zerolatency", 0); // 直播是才使用该设置
-        //        ret = av_opt_set(codec_ctx->priv_data, "tune","film",0); //  画质film
-        if (ret != 0) {
-            printf("av_opt_set tune failed\n");
         }
     }
 
