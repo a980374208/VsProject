@@ -6,6 +6,7 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavutil/avutil.h>
 #include <libavutil/imgutils.h>
+#include <libswscale/swscale.h>
 }
 
 #define ERROR_BUF(ret) \
@@ -42,55 +43,63 @@ static int decode(AVCodecContext *ctx,
             qDebug() << "avcodec_receive_frame error" << errbuf;
             return ret;
         }
-
         qDebug() << "parser index:" << ++frameIdx << "frame";
 
-        // 将解码后的数据写入文件
-        // 写入Y平面
-        //        outFile.write((char *) frame->data[0],
-        //                      frame->linesize[0] * ctx->height);
-        for (int i = 0;i < frame->height;i++) {
-            outFile.write((char *) frame->data[0] + frame->linesize[0] * i,
-                          frame->width);
+       //// 将解码后的数据写入文件
+       //// 代码假设图像数据是连续的，并且没有考虑可能存在的行对齐（即 linesize 可能大于 width）。在实际的 YUV420p 数据中，每行的 U 和 V 分量的实际字节数可能小于 width / 2，因为通常会存在对齐。
+       //// // 写入Y平面
+       ////outFile.write((char *) frame->data[0] ,
+       ////                   frame->width * frame->height);
+       //// // 写入U平面
+       ////outFile.write((char *) frame->data[1] ,
+       ////                   frame->width * frame->height / 4);
+       //// // 写入V平面
+       ////outFile.write((char *) frame->data[2],
+       ////                   frame->width * frame->height / 4);
+       // 
+       //// 写入Y平面
+       //for (int y = 0; y < frame->height; y++) {
+       //    outFile.write((char*)frame->data[0] + y * frame->linesize[0], frame->width);
+       //}
+       //// 写入U平面
+       //for (int y = 0; y < frame->height / 2; y++) {
+       //    outFile.write((char*)frame->data[1] + y * frame->linesize[1], frame->width / 2);
+       //}
+       //// 写入V平面
+       //for (int y = 0; y < frame->height / 2; y++) {
+       //    outFile.write((char*)frame->data[2] + y * frame->linesize[2], frame->width / 2);
+       //}
+       // qDebug() << "pix_fmt:" << ctx->pix_fmt;
+
+         //将源图片格式转为nv12格式
+        static bool first = true;
+        static struct SwsContext* sws_ctx;
+        static AVFrame* frame_nv12 = av_frame_alloc();
+        if (first) {
+            first = false;
+            sws_ctx = sws_getContext(
+                frame->width, frame->height, ctx->pix_fmt,
+                frame->width, frame->height, AV_PIX_FMT_NV12,
+                SWS_BILINEAR, NULL, NULL, NULL
+            );
+            frame_nv12->format = AV_PIX_FMT_NV12;
+            frame_nv12->width = frame->width;
+            frame_nv12->height = frame->height;
+            av_frame_get_buffer(frame_nv12, 0);
         }
-
-
-        // 写入U平面
-//        outFile.write((char *) frame->data[1],
-//                      frame->linesize[1] * ctx->height >> 1);
-        for (int i = 0;i < frame->height/2;i++) {
-            outFile.write((char *) frame->data[1] + frame->linesize[1] * i,
-                          frame->width / 2);
-        }
-        // 写入V平面
-//        outFile.write((char *) frame->data[2],
-//                      frame->linesize[2] * ctx->height >> 1);
-        for (int i = 0;i < frame->height/2;i++) {
-            outFile.write((char *) frame->data[2] + frame->linesize[2] * i,
-                          frame->width / 2);
-        }
-
-        qDebug() << "pix_fmt:" << ctx->pix_fmt;
-
-//        qDebug() << frame->data[0] << frame->data[1] << frame->data[2];
-
-        /*
-         * frame->data[0] 0xd08c400 0x8c400
-         * frame->data[1] 0xd0d79c0 0xd79c0
-         * frame->data[2] 0xd0ea780 0xea780
-         *
-         * frame->data[1] - frame->data[0] = 308672 = y平面的大小
-         * frame->data[2] - frame->data[1] = 77248 = u平面的大小
-         *
-         * y平面的大小 640x480*1 = 307200
-         * u平面的大小 640x480*0.25 = 76800
-         * v平面的大小 640x480*0.25
-         */
-
-//        // 将解码后的数据写入文件(460800)
-//        int imgSize = av_image_get_buffer_size(ctx->pix_fmt, ctx->width, ctx->height, 1);
-//        // outFile.write((char *) frame->data[0], frame->linesize[0]);
-//        outFile.write((char *) frame->data[0], imgSize);
+        sws_scale(sws_ctx,
+            (const uint8_t* const*)frame->data, frame->linesize,
+            0, frame->height,
+            frame_nv12->data, frame_nv12->linesize
+        );
+     // 写入Y平面
+     for (int y = 0; y < frame_nv12->height; y++) {
+         outFile.write((char*)frame_nv12->data[0] + y * frame_nv12->linesize[0], frame_nv12->width);
+     }
+     // 写入UV平面
+     for (int y = 0; y < frame_nv12->height/2; y++) {
+         outFile.write((char*)frame_nv12->data[1] + y * frame_nv12->linesize[1], frame_nv12->width);
+     }
     }
 }
 
@@ -148,8 +157,6 @@ void FFmpegs::h264Decode(const char *inFilename,
         goto end;
     }
 
-
-
     // 创建AVPacket
     pkt = av_packet_alloc();
     if (!pkt) {
@@ -200,7 +207,8 @@ void FFmpegs::h264Decode(const char *inFilename,
                                    &pkt->data, &pkt->size,
                                    (uint8_t *) inData, inLen,
                                    AV_NOPTS_VALUE, AV_NOPTS_VALUE, 0);
-
+            
+            
             if (ret < 0) {
                 ERROR_BUF(ret);
                 qDebug() << "av_parser_parse2 error" << errbuf;
