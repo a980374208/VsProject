@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "qml_DX11_test", "qml_DX11_test.vcxproj", "{B0BC1191-E739-4D38-AF56-1967CC1D83E6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B0BC1191-E739-4D38-AF56-1967CC1D83E6}.Debug|x64.ActiveCfg = Debug|x64
+		{B0BC1191-E739-4D38-AF56-1967CC1D83E6}.Debug|x64.Build.0 = Debug|x64
+		{B0BC1191-E739-4D38-AF56-1967CC1D83E6}.Release|x64.ActiveCfg = Release|x64
+		{B0BC1191-E739-4D38-AF56-1967CC1D83E6}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A18AB242-A0A9-41BB-BC16-237191D80925}
+	EndGlobalSection
+EndGlobal
