@@ -1,18 +1,18 @@
 #include <QGuiApplication>
-#include <QQmlApplicationEngine>+
-#include "dxitem.h"
+#include <QQmlApplicationEngine>
+#include "DirectXRendererItem.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
-#if defined(Q_OS_WIN) && QT_VERSION_CHECK(5, 6, 0) <= QT_VERSION && QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-#endif
-
     QGuiApplication app(argc, argv);
-    qmlRegisterType<DXItem>("CustomComponents", 1, 0, "DXItem");
+#if defined(DEBUG) | defined(_DEBUG)
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+    qmlRegisterType<DirectXRendererItem>("CustomComponents", 1, 0, "DirectXRendererItem");
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/qt/qml/qml_dx11_test/main.qml")));
+
     if (engine.rootObjects().isEmpty())
         return -1;
 
